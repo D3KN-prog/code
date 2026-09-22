@@ -3080,9 +3080,6 @@
   "instance.files.save-as": {
     "message": "다른 이름으로 저장..."
   },
-  "instance.icon-editor.symbol": {
-    "message": "문양"
-  },
   "instance.locked.delete-button": {
     "message": "인스턴스 삭제"
   },
