@@ -1017,6 +1017,7 @@ async fn run_request(
                 location,
                 instance_id.clone(),
                 DownloadReason::Modpack,
+                false,
             ))
             .await?;
             apply_post_install_edit(&instance_id, post_install_edit).await?;
@@ -1171,6 +1172,7 @@ async fn run_request(
                 location,
                 instance_id.clone(),
                 DownloadReason::Modpack,
+                false,
             ))
             .await?;
             restore_disabled_projects(
@@ -1418,6 +1420,7 @@ pub(super) async fn install_pack(
     location: CreatePackLocation,
     instance_id: String,
     reason: DownloadReason,
+    ignore_modpack_servers: bool,
 ) -> crate::Result<()> {
     let reporter = InstallProgressReporter::new(job_id, job_state.clone());
     reporter
@@ -1471,6 +1474,7 @@ pub(super) async fn install_pack(
         false,
         reason,
         reporter,
+        ignore_modpack_servers,
     ))
     .await?;
 
