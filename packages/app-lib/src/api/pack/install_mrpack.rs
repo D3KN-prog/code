@@ -1043,9 +1043,7 @@ pub(crate) async fn install_zipped_mrpack_files_with_reporter(
                     .strip_prefix("overrides/")
                     .or_else(|| filename.strip_prefix("client-overrides/"))
                     .is_some_and(|path| MODPACK_SERVER_PATHS.contains(&path));
-            (is_override
-                && !shadowed_sync_override
-                && !ignored_servers)
+            (is_override && !shadowed_sync_override && !ignored_servers)
                 .then(|| (index, file.clone()))
         })
         .collect::<Vec<_>>();
