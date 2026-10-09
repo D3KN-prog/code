@@ -1,0 +1,57 @@
+name: Windows installer
+
+on:
+  push:
+    branches:
+      - copilot/windows-installer-full
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 120
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Enable pnpm
+        run: corepack enable
+
+      - name: Set up Rust
+        uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
+        with:
+          rustflags: ''
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Configure production environment
+        run: Copy-Item packages/app-lib/.env.prod packages/app-lib/.env
+
+      - name: Generate language coverage
+        run: pnpm i18n:coverage
+
+      - name: Build Windows installer
+        run: pnpm --filter=@modrinth/app run tauri build --config tauri-windows-offline.conf.json --verbose --bundles nsis
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v7
+        with:
+          name: Modrinth-App-Windows-Installer
+          path: target/release/bundle/nsis/*-setup.exe
+          if-no-files-found: error
